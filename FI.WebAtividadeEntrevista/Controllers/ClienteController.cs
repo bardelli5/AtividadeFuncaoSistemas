@@ -8,39 +8,44 @@ using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
 
 namespace WebAtividadeEntrevista.Controllers
-    {
+{
     public class ClienteController : Controller
-        {
+    {
         public ActionResult Index()
-            {
+        {
             return View();
-            }
+        }
 
 
         public ActionResult Incluir()
-            {
+        {
             return View();
-            }
+        }
 
         [HttpPost]
         public JsonResult Incluir(ClienteModel model)
-            {
+        {
             BoCliente bo = new BoCliente();
 
             if (!this.ModelState.IsValid)
-                {
+            {
                 List<string> erros = (from item in ModelState.Values
                                       from error in item.Errors
                                       select error.ErrorMessage).ToList();
 
                 Response.StatusCode = 400;
                 return Json(string.Join(Environment.NewLine, erros));
-                }
+            }
             else
+            {
+                string cpfSemPontuacao = model.Cpf.Replace(".", "").Replace("-", "");
+                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao);
+                if (cpfJaExiste)
                 {
-
+                    return Json("O Cpf informado já foi vinculado a um cliente. Favor informar outro Cpf.");
+                }
                 model.Id = bo.Incluir(new Cliente()
-                    {
+                {
                     CEP = model.CEP,
                     Cidade = model.Cidade,
                     Email = model.Email,
@@ -50,32 +55,38 @@ namespace WebAtividadeEntrevista.Controllers
                     Nome = model.Nome,
                     Sobrenome = model.Sobrenome,
                     Telefone = model.Telefone,
-                    Cpf = model.Cpf
-                    });
+                    Cpf = cpfSemPontuacao
+                });
 
 
                 return Json("Cadastro efetuado com sucesso");
-                }
             }
+        }
 
         [HttpPost]
         public JsonResult Alterar(ClienteModel model)
-            {
+        {
             BoCliente bo = new BoCliente();
 
             if (!this.ModelState.IsValid)
-                {
+            {
                 List<string> erros = (from item in ModelState.Values
                                       from error in item.Errors
                                       select error.ErrorMessage).ToList();
 
                 Response.StatusCode = 400;
                 return Json(string.Join(Environment.NewLine, erros));
-                }
+            }
             else
+            {
+                string cpfSemPontuacao = model.Cpf.Replace(".", "").Replace("-", "");
+                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao);
+                if (cpfJaExiste)
                 {
+                    return Json("O Cpf informado já foi vinculado a um cliente. Favor informar outro Cpf.");
+                }
                 bo.Alterar(new Cliente()
-                    {
+                {
                     Id = model.Id,
                     CEP = model.CEP,
                     Cidade = model.Cidade,
@@ -86,24 +97,24 @@ namespace WebAtividadeEntrevista.Controllers
                     Nome = model.Nome,
                     Sobrenome = model.Sobrenome,
                     Telefone = model.Telefone,
-                    Cpf = model.Cpf
-                    });
+                    Cpf = cpfSemPontuacao
+                });
 
                 return Json("Cadastro alterado com sucesso");
-                }
             }
+        }
 
         [HttpGet]
         public ActionResult Alterar(long id)
-            {
+        {
             BoCliente bo = new BoCliente();
             Cliente cliente = bo.Consultar(id);
             Models.ClienteModel model = null;
 
             if (cliente != null)
-                {
+            {
                 model = new ClienteModel()
-                    {
+                {
                     Id = cliente.Id,
                     CEP = cliente.CEP,
                     Cidade = cliente.Cidade,
@@ -115,19 +126,19 @@ namespace WebAtividadeEntrevista.Controllers
                     Sobrenome = cliente.Sobrenome,
                     Telefone = cliente.Telefone,
                     Cpf = cliente.Cpf
-                    };
+                };
 
 
-                }
+            }
 
             return View(model);
-            }
+        }
 
         [HttpPost]
         public JsonResult ClienteList(int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = null)
-            {
+        {
             try
-                {
+            {
                 int qtd = 0;
                 string campo = string.Empty;
                 string crescente = string.Empty;
@@ -143,11 +154,11 @@ namespace WebAtividadeEntrevista.Controllers
 
                 //Return result to jTable
                 return Json(new { Result = "OK", Records = clientes, TotalRecordCount = qtd });
-                }
+            }
             catch (Exception ex)
-                {
+            {
                 return Json(new { Result = "ERROR", Message = ex.Message });
-                }
             }
         }
     }
+}

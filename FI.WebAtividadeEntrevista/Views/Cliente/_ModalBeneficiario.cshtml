@@ -1,9 +1,11 @@
-﻿<!-- Botão para acionar modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBeneficiario">
+﻿@model WebAtividadeEntrevista.Models.ClienteModel
+
+<button type="button" onclick="modalBeneficiarios(@Model.Id)" class="btn btn-primary" data-toggle="modal" data-target=".modal-lg">
     Beneficiários
 </button>
-<div class="modal fade bd-example-modal-lg" id="modalBeneficiario" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+
+<div class="modal fade modal-lg" id="modalBeneficiario" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Beneficiários</h5>
@@ -12,25 +14,28 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="Cpf">CPF:</label>
-                            <input required="required" type="text" class="form-control" id="CpfBeneficiario" name="Cpf" placeholder="Ex.: 999.999.999-99" maxlength="14">
+                <form action="/Beneficiario/Incluir" class="needs-validation" method="post" id="formEnviarBeneficiarioValidacao" name="formEnviarBeneficiarioValidacao">
+                    <input type="hidden" value="@Model.Id" name="IdCliente" />
+                    <div class="row visualizarBeneficiario">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Cpf">CPF:</label>
+                                <input required="required" id="CpfBeneficiario" type="text" class="form-control" name="Cpf" placeholder="Ex.: 999.999.999-99" maxlength="14">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Nome">Nome:</label>
+                                <input required="required" type="text" class="form-control" id="Nome" name="Nome" placeholder="Ex.: João" maxlength="50">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-sm btn-success" style="margin-top: 26px;">Incluir</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="Nome">Nome:</label>
-                            <input required="required" type="text" class="form-control" id="Nome" name="Nome" placeholder="Ex.: João" maxlength="50">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-sm btn-success" style="margin-top: 26px;">Incluir</button>
-                        </div>
-                    </div>
-                </div>
+                </form>
                 <table class="table">
                     <thead>
                         <tr>
@@ -39,11 +44,24 @@
                             <th scope="col">Ações</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="tbody-tabela-modal">
+                        <tr id="editar-beneficiario-linhas" hidden>
+                            <td class="cpf">
+                                <input type="text" id="editarCpfBenef" class="form-control input-cpf" placeholder="Ex.: 999.999.999-99" maxlength="14">
+                            </td>
+                            <td class="nome">
+                                <input type="text" class="form-control input-nome" placeholder="Ex.: João" maxlength="50">
+                            </td>
+                            <td>
+                                <div>
+                                    <button class="btn btn-sm btn-danger cancelar">Cancelar</button>
+                                    <button class="btn btn-sm btn-success atualizar">Salvar</button>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
-

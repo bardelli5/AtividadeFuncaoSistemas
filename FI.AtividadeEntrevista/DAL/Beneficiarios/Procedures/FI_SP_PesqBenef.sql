@@ -1,0 +1,8 @@
+﻿CREATE PROC FI_SP_PesqBenef
+	@IdCliente BIGINT	
+AS
+BEGIN
+    SELECT *
+    FROM BENEFICIARIOS
+    WHERE IdCliente = @IdCliente
+END

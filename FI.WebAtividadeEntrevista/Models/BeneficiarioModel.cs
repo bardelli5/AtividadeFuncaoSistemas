@@ -26,5 +26,9 @@ namespace WebAtividadeEntrevista.Models
         [CpfValidation(ErrorMessage = "CPF inválido.")]
         public string Cpf { get; set; }
 
-        }    
+        /// <summary>
+        /// IdCliente
+        /// </summary>
+        public long IdCliente { get; set; }
+    }
 }

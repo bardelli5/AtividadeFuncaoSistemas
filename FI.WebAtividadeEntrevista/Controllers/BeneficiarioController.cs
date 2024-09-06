@@ -6,137 +6,133 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
+using System.Web.Services.Description;
 
 namespace WebAtividadeEntrevista.Controllers
-    {
+{
     public class BeneficiarioController : Controller
+    {
+        [HttpPost]
+        public JsonResult Incluir(BeneficiarioModel model)
         {
-        [HttpPost]
-        public JsonResult Incluir(ClienteModel model)
-            {
-            BoCliente bo = new BoCliente();
+            BoBeneficiario bo = new BoBeneficiario();
 
             if (!this.ModelState.IsValid)
-                {
+            {
                 List<string> erros = (from item in ModelState.Values
                                       from error in item.Errors
                                       select error.ErrorMessage).ToList();
 
                 Response.StatusCode = 400;
                 return Json(string.Join(Environment.NewLine, erros));
-                }
-            else
-                {
-
-                model.Id = bo.Incluir(new Cliente()
-                    {
-                    CEP = model.CEP,
-                    Cidade = model.Cidade,
-                    Email = model.Email,
-                    Estado = model.Estado,
-                    Logradouro = model.Logradouro,
-                    Nacionalidade = model.Nacionalidade,
-                    Nome = model.Nome,
-                    Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone,
-                    Cpf = model.Cpf
-                    });
-
-
-                return Json("Cadastro efetuado com sucesso");
-                }
             }
+            else
+            {
+                string cpfSemPontuacao = model.Cpf.Replace(".", "").Replace("-", "");
+                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao);
+                if (cpfJaExiste)
+                {
+                    return Json(new { Result = "ERRO", Message = "O Cpf informado já foi vinculado a um beneficiário. Favor informar outro Cpf." });
+                }
+
+                model.Id = bo.Incluir(new Beneficiario()
+                {
+                    Nome = model.Nome,
+                    Cpf = cpfSemPontuacao,
+                    IdCliente = model.IdCliente,
+                });
+
+
+                return Json(new { Result = "OK", Message = "Cadastro efetuado com sucesso." });
+            }
+        }
 
         [HttpPost]
-        public JsonResult Alterar(ClienteModel model)
-            {
-            BoCliente bo = new BoCliente();
+        public JsonResult Alterar(BeneficiarioModel model)
+        {
+            BoBeneficiario bo = new BoBeneficiario();
 
             if (!this.ModelState.IsValid)
-                {
+            {
                 List<string> erros = (from item in ModelState.Values
                                       from error in item.Errors
                                       select error.ErrorMessage).ToList();
 
                 Response.StatusCode = 400;
                 return Json(string.Join(Environment.NewLine, erros));
-                }
+            }
             else
+            {
+                string cpfSemPontuacao = model.Cpf.Replace(".", "").Replace("-", "");
+                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao);
+                if (cpfJaExiste)
                 {
-                bo.Alterar(new Cliente()
-                    {
+                    return Json(new { Result = "ERROR", Message = "O Cpf informado já foi vinculado a um beneficiário. Favor informar outro Cpf."});
+                }
+                bo.Alterar(new Beneficiario()
+                {
                     Id = model.Id,
-                    CEP = model.CEP,
-                    Cidade = model.Cidade,
-                    Email = model.Email,
-                    Estado = model.Estado,
-                    Logradouro = model.Logradouro,
-                    Nacionalidade = model.Nacionalidade,
                     Nome = model.Nome,
-                    Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone,
-                    Cpf = model.Cpf
-                    });
+                    Cpf = cpfSemPontuacao
+                });
 
-                return Json("Cadastro alterado com sucesso");
-                }
+                return Json(new { Result = "OK", Message = "Cadastro alterado com sucesso." });
             }
+        }
 
         [HttpGet]
         public ActionResult Alterar(long id)
+        {
+            BoBeneficiario bo = new BoBeneficiario();
+            Beneficiario beneficiario = bo.Consultar(id);
+            BeneficiarioModel model = null;
+
+            if (beneficiario != null)
             {
-            BoCliente bo = new BoCliente();
-            Cliente cliente = bo.Consultar(id);
-            Models.ClienteModel model = null;
-
-            if (cliente != null)
+                model = new BeneficiarioModel()
                 {
-                model = new ClienteModel()
-                    {
-                    Id = cliente.Id,
-                    CEP = cliente.CEP,
-                    Cidade = cliente.Cidade,
-                    Email = cliente.Email,
-                    Estado = cliente.Estado,
-                    Logradouro = cliente.Logradouro,
-                    Nacionalidade = cliente.Nacionalidade,
-                    Nome = cliente.Nome,
-                    Sobrenome = cliente.Sobrenome,
-                    Telefone = cliente.Telefone,
-                    Cpf = cliente.Cpf
-                    };
+                    Id = beneficiario.Id,
+                    Nome = beneficiario.Nome,
+                    Cpf = beneficiario.Cpf
+                };
 
 
-                }
-
-            return View(model);
             }
 
+            return View(model);
+        }
+
         [HttpPost]
-        public JsonResult ClienteList(int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = null)
-            {
+        public JsonResult Excluir(long id)
+        {
+            BoBeneficiario bo = new BoBeneficiario();
+
+            bo.Excluir(id);
+
+            return Json(new { Result = "OK", Message = "Cadastro excluído com sucesso." });
+
+        }
+
+        [HttpGet]
+        public JsonResult BeneficiarioList(long idCliente)
+        {
             try
+            {
+                List<Beneficiario> listaAtualizada = new List<Beneficiario>();
+                var beneficiarios = new BoBeneficiario().Pesquisa(idCliente);
+                foreach (var item in beneficiarios)
                 {
-                int qtd = 0;
-                string campo = string.Empty;
-                string crescente = string.Empty;
-                string[] array = jtSorting.Split(' ');
-
-                if (array.Length > 0)
-                    campo = array[0];
-
-                if (array.Length > 1)
-                    crescente = array[1];
-
-                List<Cliente> clientes = new BoCliente().Pesquisa(jtStartIndex, jtPageSize, campo, crescente.Equals("ASC", StringComparison.InvariantCultureIgnoreCase), out qtd);
-
-                //Return result to jTable
-                return Json(new { Result = "OK", Records = clientes, TotalRecordCount = qtd });
+                    item.Cpf = Convert.ToUInt64(item.Cpf).ToString(@"000\.000\.000\-00");
+                    listaAtualizada.Add(item);
                 }
+
+                //Return result
+                return Json(new { Result = "OK", BeneficiarioList = listaAtualizada }, JsonRequestBehavior.AllowGet);
+            }
             catch (Exception ex)
-                {
-                return Json(new { Result = "ERROR", Message = ex.Message });
-                }
+            {
+                return Json(new { Result = "ERROR", Message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
     }
+}
