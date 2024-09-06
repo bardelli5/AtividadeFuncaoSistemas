@@ -14,8 +14,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/Beneficiario/Incluir" class="needs-validation" method="post" id="formEnviarBeneficiarioValidacao" name="formEnviarBeneficiarioValidacao">
-                    <input type="hidden" value="@Model.Id" name="IdCliente" />
+                    <input type="hidden" id="idCliente" value="@Model.Id" name="IdCliente" />
                     <div class="row visualizarBeneficiario">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -26,16 +25,15 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="Nome">Nome:</label>
-                                <input required="required" type="text" class="form-control" id="Nome" name="Nome" placeholder="Ex.: João" maxlength="50">
+                                <input required="required" type="text" class="form-control" id="NomeBeneficiario" name="Nome" placeholder="Ex.: João" maxlength="50">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <button type="submit" class="btn btn-sm btn-success" style="margin-top: 26px;">Incluir</button>
+                                <button type="submit" class="btn btn-sm btn-success incluir" style="margin-top: 26px;">Incluir</button>
                             </div>
                         </div>
                     </div>
-                </form>
                 <table class="table">
                     <thead>
                         <tr>

@@ -18,7 +18,6 @@ function modalBeneficiarios(idCliente) {
         url: urlCompleto,
         data: { idCliente: idCliente },
         success: function (dados) {
-            console.log(dados);
             if (dados.Result == "OK") {
                 $(".linha-cpf").empty();
                 $(".linha-nome").empty();
@@ -43,6 +42,43 @@ function modalBeneficiarios(idCliente) {
     });
 }
 
+$(".incluir").on("click", function () {
+
+    var idCliente = $("#idCliente").val();
+    var cpf = $("#CpfBeneficiario").val();
+    var nome = $("#NomeBeneficiario").val();
+
+
+    const dadosForm = {
+        IdCliente: idCliente,
+        Cpf: cpf,
+        Nome: nome,
+    };
+
+    $.ajax({
+        method: "POST",
+        url: "/Beneficiario/Incluir",
+        data: JSON.stringify(dadosForm),
+        contentType: "application/json",
+        success: function (dados) {
+            if (dados.Result == "OK") {
+                setTimeout(function () { location.reload(true); }, 2000);
+                ModalDialog("Sucesso!", dados.Message);
+            }
+            else {
+                ModalDialog("Ocorreu um erro", dados.Message);
+            }
+        },
+        error: function (r) {
+            if (r.status == 400) {
+                ModalDialog("Ocorreu um erro", r.responseJSON);
+            }
+            else if (r.status == 500) {
+                ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+            }
+        },
+    });
+});
 
 $(document).delegate(".alterarBeneficiario", "click", function () {
     var clickedRow = $(this).closest("tr");
@@ -94,7 +130,6 @@ $(document).delegate(".atualizar", "click", function () {
         contentType: "application/json",
         success: function (dados) {
             if (dados.Result == "OK") {
-                console.log(dados);
                 ModalDialog("Sucesso!", dados.Message);
                 var beneficiario = $("#" + id);
                 beneficiario.show();
@@ -106,7 +141,7 @@ $(document).delegate(".atualizar", "click", function () {
                 clickedRow.remove();
             }
             else {
-                ModalDialog("ERRO!", dados.Message);
+                ModalDialog("Ocorreu um erro", dados.Message);
             }
         }
     });
@@ -121,19 +156,14 @@ $(document).delegate(".excluir", "click", function () {
         url: "/Beneficiario/Excluir/" + id,
         success: function (dados) {
             if (dados.Result == "OK") {
-                console.log(dados);
                 ModalDialog("Sucesso!", dados.Message);
                 clickedRow.remove();
             }
             else {
-                ModalDialog("Erro!", dados.Message);
+                ModalDialog("Ocorreu um erro", dados.Message);
             }
         }
     });
-
-    // mandar Id pro ajax
-    // quando sucesso, excluir:
-    clickedRow.remove()
 })
 
 $(document).delegate("#editarCpfBenef", "input", function () {
@@ -147,11 +177,11 @@ $(document).delegate("#editarCpfBenef", "input", function () {
 
 function ModalDialog(titulo, texto) {
     var random = Math.random().toString().replace('.', '');
-    var modal = '<div id="' + random + '" class="modal fade">                                                               ' +
+    var modal = '<div id="' + random + '" class="modal fade modalMensagem">                                                               ' +
         '        <div class="modal-dialog">                                                                                 ' +
         '            <div class="modal-content">                                                                            ' +
         '                <div class="modal-header">                                                                         ' +
-        '                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>         ' +
+        '                    <button type="button" class="close fecharModal" data-dismiss="modal" aria-hidden="true">×</button>         ' +
         '                    <h4 class="modal-title">' + titulo + '</h4>                                                    ' +
         '                </div>                                                                                             ' +
         '                <div class="modal-body">                                                                           ' +
