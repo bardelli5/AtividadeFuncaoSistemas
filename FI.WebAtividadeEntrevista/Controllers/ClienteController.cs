@@ -39,10 +39,10 @@ namespace WebAtividadeEntrevista.Controllers
             else
             {
                 string cpfSemPontuacao = model.Cpf.Replace(".", "").Replace("-", "");
-                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao);
+                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao, model.Id);
                 if (cpfJaExiste)
                 {
-                    return Json("O Cpf informado já foi vinculado a um cliente. Favor informar outro Cpf.");
+                    return Json(new { Result = "ERROR", Message = "O Cpf informado já foi vinculado a um cliente. Favor informar outro Cpf." });
                 }
                 model.Id = bo.Incluir(new Cliente()
                 {
@@ -59,7 +59,7 @@ namespace WebAtividadeEntrevista.Controllers
                 });
 
 
-                return Json("Cadastro efetuado com sucesso");
+                return Json(new { Result = "OK", Message = "Cadastro alterado com sucesso." });
             }
         }
 
@@ -80,10 +80,10 @@ namespace WebAtividadeEntrevista.Controllers
             else
             {
                 string cpfSemPontuacao = model.Cpf.Replace(".", "").Replace("-", "");
-                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao);
+                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao, model.Id);
                 if (cpfJaExiste)
                 {
-                    return Json("O Cpf informado já foi vinculado a um cliente. Favor informar outro Cpf.");
+                    return Json(new { Result = "ERROR", Message = "O Cpf informado já foi vinculado a um cliente. Favor informar outro Cpf." });
                 }
                 bo.Alterar(new Cliente()
                 {
@@ -100,7 +100,7 @@ namespace WebAtividadeEntrevista.Controllers
                     Cpf = cpfSemPontuacao
                 });
 
-                return Json("Cadastro alterado com sucesso");
+                return Json(new { Result = "OK", Message = "Cadastro alterado com sucesso." });
             }
         }
 

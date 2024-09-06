@@ -1,5 +1,6 @@
 ﻿using FI.AtividadeEntrevista.BLL;
 using FI.AtividadeEntrevista.DML;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -46,11 +47,19 @@ namespace FI.AtividadeEntrevista.DAL
             return benef.FirstOrDefault();
         }
 
-        internal bool VerificarExistencia(string CPF)
+        internal bool VerificarExistencia(string CPF, long? id = null)
         {
             List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
 
             parametros.Add(new System.Data.SqlClient.SqlParameter("CPF", CPF));
+            if (id.HasValue)
+            {
+                parametros.Add(new System.Data.SqlClient.SqlParameter("IdBenef", id.Value));
+            }
+            else
+            {
+                parametros.Add(new System.Data.SqlClient.SqlParameter("IdBenef", DBNull.Value));
+            }
 
             DataSet ds = base.Consultar("FI_SP_VerificarCpfBenef", parametros);
 

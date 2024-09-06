@@ -64,10 +64,10 @@ namespace FI.AtividadeEntrevista.BLL
         /// </summary>
         /// <param name="CPF"></param>
         /// <returns></returns>
-        public bool VerificarExistencia(string CPF)
+        public bool VerificarExistencia(string CPF, long id)
         {
             DAL.DaoBeneficiario benef = new DAL.DaoBeneficiario();
-            return benef.VerificarExistencia(CPF);
+            return benef.VerificarExistencia(CPF, id);
         }
     }
 }

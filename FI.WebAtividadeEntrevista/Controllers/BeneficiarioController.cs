@@ -29,7 +29,7 @@ namespace WebAtividadeEntrevista.Controllers
             else
             {
                 string cpfSemPontuacao = model.Cpf.Replace(".", "").Replace("-", "");
-                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao);
+                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao, model.Id);
                 if (cpfJaExiste)
                 {
                     return Json(new { Result = "ERRO", Message = "O Cpf informado já foi vinculado a um beneficiário. Favor informar outro Cpf." });
@@ -64,7 +64,7 @@ namespace WebAtividadeEntrevista.Controllers
             else
             {
                 string cpfSemPontuacao = model.Cpf.Replace(".", "").Replace("-", "");
-                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao);
+                var cpfJaExiste = bo.VerificarExistencia(cpfSemPontuacao, model.Id);
                 if (cpfJaExiste)
                 {
                     return Json(new { Result = "ERROR", Message = "O Cpf informado já foi vinculado a um beneficiário. Favor informar outro Cpf."});
