@@ -143,7 +143,15 @@ $(document).delegate(".atualizar", "click", function () {
             else {
                 ModalDialog("Ocorreu um erro", dados.Message);
             }
-        }
+        },
+        error: function (r) {
+            if (r.status == 400) {
+                ModalDialog("Ocorreu um erro", r.responseJSON);
+            }
+            else if (r.status == 500) {
+                ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+            }
+        }, 
     });
 })
 
