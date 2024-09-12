@@ -16,13 +16,13 @@ namespace WebAtividadeEntrevista.Models
         /// <summary>
         /// Nome
         /// </summary>
-        [Required(ErrorMessage = "O Nome é obrigatório")]
+        [Required(ErrorMessage = "O Nome é obrigatório.")]
         public string Nome { get; set; }
 
         /// <summary>
         /// Cpf
         /// </summary>
-        [Required(ErrorMessage = "O CPF é obrigatório")]
+        [Required(ErrorMessage = "O CPF é obrigatório.")]
         [CpfValidation(ErrorMessage = "CPF inválido.")]
         public string Cpf { get; set; }
 

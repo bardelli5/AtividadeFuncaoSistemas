@@ -2,22 +2,22 @@
 using System.Text.RegularExpressions;
 
 public class CpfValidation : ValidationAttribute
-    {
+{
     public string Cpf { get; set; }
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-        {
-        Cpf = value.ToString();
+    {
         if (string.IsNullOrEmpty(Cpf))
-            {
+        {
             return ValidationResult.Success;
-            }
+        }
 
+        Cpf = value.ToString();
         Cpf = Cpf.Replace(".", "").Replace("-", "");
 
         if (Cpf.Length != 11 || !Regex.IsMatch(Cpf, @"^\d{11}$"))
-            {
+        {
             return new ValidationResult("CPF inválido.");
-            }
+        }
 
         int[] multiplicador1 = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
         int[] multiplicador2 = { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -51,10 +51,10 @@ public class CpfValidation : ValidationAttribute
         digito = digito + resto.ToString();
 
         if (!Cpf.EndsWith(digito))
-            {
+        {
             return new ValidationResult("CPF inválido.");
-            }
+        }
 
         return ValidationResult.Success;
-        }
     }
+}

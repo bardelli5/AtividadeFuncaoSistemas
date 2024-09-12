@@ -7,8 +7,9 @@
             .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
         $(this).val(cpf);
     });
-
 })
+
+
 
 function modalBeneficiarios(idCliente) {
     let urlCompleto = "/Beneficiario/BeneficiarioList";
@@ -151,7 +152,7 @@ $(document).delegate(".atualizar", "click", function () {
             else if (r.status == 500) {
                 ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
             }
-        }, 
+        },
     });
 })
 

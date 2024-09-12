@@ -20,12 +20,14 @@
                             <div class="form-group">
                                 <label for="Cpf">CPF:</label>
                                 <input required="required" id="CpfBeneficiario" type="text" class="form-control" name="Cpf" placeholder="Ex.: 999.999.999-99" maxlength="14">
+                                <span asp-validation-for="@Model.Cpf" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="Nome">Nome:</label>
                                 <input required="required" type="text" class="form-control" id="NomeBeneficiario" name="Nome" placeholder="Ex.: João" maxlength="50">
+                                <span asp-validation-for="@Model.Nome" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-2">
